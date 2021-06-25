@@ -70,7 +70,7 @@ class Spiders extends Component {
             />
             
         )}
-        <svg height="700" width="700" >
+        <svg height={window.innerHeight} width={window.innerWidth} >
         {Object
           .keys(this.state.lines)
           .map( lineId =>
