@@ -1,1 +1,1 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+This is a Spiders web application developed with React.js and Next.js for Interia's recruitment process.
