@@ -7,7 +7,13 @@ class Spider extends Component {
     render() {
 
         return (
-           <div style={{position:"fixed", left: this.props.x+"px", top: this.props.y+"px"}}>
+           <div 
+                className={styles.spiders} 
+                style={{ 
+                    left: this.props.x+"px", 
+                    top: this.props.y+"px"
+                }}>
+                
                 <Image
                     onDrag={this.props.onDrag}
                     onMouseDown={this.props.onMouseDown}

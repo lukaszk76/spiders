@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Spider from "./Spider";
+import styles from "../styles/styles.module.css";
 
 class Spiders extends Component {
   state = {
@@ -16,8 +17,19 @@ class Spiders extends Component {
         x:500,
         y:100
       }
+    },
+    lines:{
+      1:{
+        from:1,
+        to:2
+      },
+      2:{
+        from:1,
+        to:3
+      }
     }
   }
+
 
   deltaX = 0;
   deltaY = 0;
@@ -41,7 +53,7 @@ class Spiders extends Component {
   }
 
   render() {
-    let spiderId = 1;
+    
     return (
       <div>
         {Object
@@ -58,10 +70,33 @@ class Spiders extends Component {
             />
             
         )}
+        <svg height="700" width="700" >
+        {Object
+          .keys(this.state.lines)
+          .map( lineId =>
+            {
+              const spider1 = this.state.lines[lineId].from;
+              const spider2 = this.state.lines[lineId].to;
+              
+              return (
+               
+                  <line 
+                    className={styles.redLines}
+                    key={lineId}
+                    x1={this.state.spiders[spider1].x+77} 
+                    y1={this.state.spiders[spider1].y+77} 
+                    x2={this.state.spiders[spider2].x+77} 
+                    y2={this.state.spiders[spider2].y+77}  
+                  />
+            
+              )
+            }
+        )}
+
+        </svg>
       </div>
     )
   }
 }
-
 
 export default Spiders;
