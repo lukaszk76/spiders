@@ -17,7 +17,7 @@ class Spider extends Component {
                 
                 <Image
                     onDrag={this.props.onDrag}
-                    onMouseDown={this.props.onMouseDown}
+                    onDragStart={this.props.onDragStart}
                     priority
                     src="/images/spider.png"
                     className={styles.borderCircle}

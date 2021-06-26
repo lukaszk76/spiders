@@ -3,18 +3,21 @@ import React, {Component} from 'react';
 import Spider from "./Spider";
 import Lines from "./Lines";
 import Modal from "./Modal";
-import LevelCounter from "./LevelCounter";
+import StopWatch from './StopWatch';
 import checkIfSolved from '../utils/checkIfSolved';
 
 import level1DataJSON from '../levels/level1.json';
 import level2DataJSON from '../levels/level2.json';
 import level3DataJSON from '../levels/level3.json';
+import level4DataJSON from '../levels/level4.json';
+import level5DataJSON from '../levels/level5.json';
+import level6DataJSON from '../levels/level6.json';
 
 class Spiders extends Component {
  
   constructor(props) {
     super(props);
-  
+    
     this.deltaX = undefined;  //delta between current position of cursor and center of a spider when dragging starts (X coordinate)
     this.deltaY = undefined;  //delta between current position of cursor and center of a spider when dragging starts (Y coordinate)
     this.state = {  
@@ -22,14 +25,16 @@ class Spiders extends Component {
       lines:null,             //collection of lines between spiders. Initially null - these are loaded from JSON in componentDidMount()
       linesCrossed: {},       //collection of lines crossed with other lines
       levelCompleted: false,  //set true if level completed - will trigger congratulations modal
-      level: 0                //current level
+      level: 0,               //current level
+      stoperActive: false,    //triggers the stopwatch
+      time: 0                 //initial time for the stopwatch
     };
   }
 
   // loads spiders and lines from JSON file for the current level (level defined in state)
   loadLevelData(level) {
     
-    let levelDataJSON = level3DataJSON;
+    let levelDataJSON = level6DataJSON;
     switch(level) {
       case 1: {
         levelDataJSON = level1DataJSON;
@@ -41,6 +46,18 @@ class Spiders extends Component {
       }
       case 3: {
         levelDataJSON = level3DataJSON;
+        break;
+      }
+      case 4: {
+        levelDataJSON = level4DataJSON;
+        break;
+      }
+      case 5: {
+        levelDataJSON = level5DataJSON;
+        break;
+      }
+      case 6: {
+        levelDataJSON = level6DataJSON;
         break;
       }
     }
@@ -63,10 +80,13 @@ class Spiders extends Component {
       const newState = {
         ...this.state,
         linesCrossed: linesCrossed,
-        levelCompleted: levelCompleted
+        levelCompleted: levelCompleted,
+        stoperActive: !levelCompleted,
+        time: this.state.time === 0 ? 1:0
       };
 
       this.setState( newState );
+      
     };
 
   }
@@ -106,7 +126,8 @@ class Spiders extends Component {
       lines: levelData.lines,
       linesCrossed: {},
       level: nextLevel,
-      levelCompleted: false
+      levelCompleted: false,
+      stoperActive: true
     }
     this.setState(newState);
   }
@@ -127,7 +148,7 @@ class Spiders extends Component {
                 x={this.state.spiders[spiderId].x} 
                 y={this.state.spiders[spiderId].y}
                 onDrag={e => this.spiderDragged(e, spiderId)}
-                onMouseDown={e => this.setDeltas(e, spiderId)} 
+                onDragStart={e => this.setDeltas(e, spiderId)} 
               />
               
           )}
@@ -142,6 +163,12 @@ class Spiders extends Component {
 
     return (
       <div>
+        
+        <StopWatch 
+          isActive={this.state.stoperActive} 
+          level={this.state.level}
+        />
+
         {/* this is the modal which appears when a level is completed */}
         <Modal 
             show={this.state.levelCompleted}
@@ -154,8 +181,6 @@ class Spiders extends Component {
             </div>       
         </Modal>
 
-        <LevelCounter level={this.state.level}/>
-        
         {/* draw spiders based on their collection in the state */}
         { spiders }
             
