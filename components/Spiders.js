@@ -149,8 +149,8 @@ class Spiders extends Component {
             <div>
               <h3>Gratulacje!</h3>
               <br/>
-              <p>jesteś niezły w rozplątywaniu pajęczyny!</p>
-              <p>teraz będzie trudniej...</p>
+              <p>Jesteś niezły w rozplątywaniu pajęczyny!</p>
+              <p>Poziom <b>{this.state.level + 1}</b> będzie trudniejszy...</p>
             </div>       
         </Modal>
 

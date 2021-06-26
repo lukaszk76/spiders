@@ -16,11 +16,16 @@ const checkIfCrossed = (equation1, equation2, spiders, spider1, spider2, spider3
     const W = (equation1.a * equation2.b) - (equation2.a * equation1.b);
     const Wx = (equation1.c * equation2.b) - (equation2.c * equation1.b);
     const Wy = (equation1.a * equation2.c) - (equation2.a * equation1.c);
-
-    const minX = Math.min( spiders[spider1].x, spiders[spider2].x, spiders[spider3].x, spiders[spider4].x ) //select max and min coordinates of all spiders to define the are where lines may cross
-    const maxX = Math.max( spiders[spider1].x, spiders[spider2].x, spiders[spider3].x, spiders[spider4].x )
-    const minY = Math.min( spiders[spider1].y, spiders[spider2].y, spiders[spider3].y, spiders[spider4].y )
-    const maxY = Math.max( spiders[spider1].y, spiders[spider2].y, spiders[spider3].y, spiders[spider4].y )
+    
+    var xArray = [spiders[spider1].x, spiders[spider2].x, spiders[spider3].x, spiders[spider4].x];
+    var yArray = [spiders[spider1].y, spiders[spider2].y, spiders[spider3].y, spiders[spider4].y];
+    xArray.sort(function(a, b){return a-b});
+    yArray.sort(function(a, b){return a-b});
+    
+    const minX = xArray[1]; //select max and min coordinates of the area for checking if lines are not crossing
+    const maxX = xArray[2]; 
+    const minY = yArray[1];
+    const maxY = yArray[2];
 
     if (W !== 0) {
          
