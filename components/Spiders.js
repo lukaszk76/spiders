@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import Spider from "./Spider";
 import Lines from "./Lines"
+import checkIfSolved from '../utils/checkIfSolved';
 
 import level1DataJSON from '../levels/level1.json';
 
@@ -46,6 +47,7 @@ class Spiders extends Component {
       }
       this.setState( newState );
     }
+    checkIfSolved(this.state.spiders, this.state.lines);
   }
 
   setDeltas(e, spiderId) {
