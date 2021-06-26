@@ -22,20 +22,20 @@ const checkIfCrossed = (equation1, equation2, spiders, spider1, spider2, spider3
     const minY = Math.min( spiders[spider1].y, spiders[spider2].y, spiders[spider3].y, spiders[spider4].y )
     const maxY = Math.max( spiders[spider1].y, spiders[spider2].y, spiders[spider3].y, spiders[spider4].y )
 
-    if (W === 0) {
-        return false; // lines are parallel - no crossing
-    } else {
+    if (W !== 0) {
+         
         const x = Wx / W;   // lines are crossing in (x,y)
         const y = Wy / W;
+       
         if (                // check if they are crossing between spiders or on extenions of lines (not the case we need)
             x > minX &
-            x < maxY &
+            x < maxX &
             y > minY &
             y < maxY
         ) { 
             return true;   
-        } 
-    }
+        }
+    }  
     return false
 }
 
@@ -48,7 +48,7 @@ const checkIfSolved = ( spiders, lines ) => {
         .map( lineId => {
             const spider1 = lines[lineId].from; // select both spiders at the line end
             const spider2 = lines[lineId].to;
-            equations[lineId] = factors (       // calculate equation ax + by = c from coordinates x,y of spiders at line ends and store it equations
+            equations[lineId] = factors (       // calculate factors of equation ax + by = c from coordinates x,y of spiders at line ends and store it equations
                 spiders[spider1].x,
                 spiders[spider1].y,
                 spiders[spider2].x,
@@ -57,8 +57,9 @@ const checkIfSolved = ( spiders, lines ) => {
         }
     )
 
+    const linesCrossed = {}; //this will contain id of lines which cross with other ones
     Object
-        .keys(lines)
+        .keys(lines)            // for each line check if it crosses with some other line
         .map( lineId1 => {
             Object
                 .keys(lines)
@@ -74,11 +75,20 @@ const checkIfSolved = ( spiders, lines ) => {
                         spider2 !== spider3 &
                         spider2 !== spider4) 
                         {
-                            checkIfCrossed(equations[lineId1], equations[lineId2], spiders, spider1, spider2, spider3, spider4); //check if these 2 lines crosses between spiders
+                             if (checkIfCrossed( //check if these 2 lines crosses between spiders
+                                 equations[lineId1], 
+                                 equations[lineId2], 
+                                 spiders, 
+                                 spider1, 
+                                 spider2, 
+                                 spider3, 
+                                 spider4)) {
+                                     linesCrossed[lineId1]=true;
+                                 }; 
                         }
                 })
         })
-
+    return linesCrossed;
 }
 
 export default checkIfSolved;

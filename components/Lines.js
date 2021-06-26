@@ -17,7 +17,7 @@ const Lines = (props) => {
                 return (
                
                     <line 
-                        className={styles.redLines}
+                        className={props.state.linesCrossed[lineId] ? styles.crossedLine : styles.solvedLine}
                         key={lineId}
                         x1={props.state.spiders[spider1].x+77} // +77 is to make a line starts from center of a spider #TODO: replace static 77 with a dynamic value depending on size of a spider
                         y1={props.state.spiders[spider1].y+77} 

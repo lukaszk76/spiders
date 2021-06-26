@@ -13,9 +13,10 @@ class Spiders extends Component {
   
     this.deltaX = undefined;  //delta between current position of cursor and center of a spider when dragging starts (X coordinate)
     this.deltaY = undefined;  //delta between current position of cursor and center of a spider when dragging starts (Y coordinate)
-    this.state = {  //collection of spiders. Initially null - these are loaded from JSON in componentDidMount()
-      spiders:null,
-      lines:null
+    this.state = {  
+      spiders:null,       //collection of spiders. Initially null - these are loaded from JSON in componentDidMount()
+      lines:null,         //collection of lines between spiders. Initially null - these are loaded from JSON in componentDidMount()
+      linesCrossed: {}  //collection of lines crossed with other lines
     };
   }
 
@@ -28,10 +29,26 @@ class Spiders extends Component {
     const newState = {
       ...this.state,
       spiders: level1Data.spiders,
-      lines: level1Data.lines
+      lines: level1Data.lines,
     }
     
     this.setState(newState);
+
+    this.identifyCrossedLines();
+
+  }
+
+  identifyCrossedLines() {
+  
+    if( this.state.spiders !== null & this.state.lines !== null ) {
+      const linesCrossed = checkIfSolved(this.state.spiders, this.state.lines);
+      const newState = {
+        ...this.state,
+        linesCrossed: linesCrossed
+      };
+
+      this.setState( newState );
+    };
   }
 
   spiderDragged(e, spiderId) {
@@ -47,7 +64,9 @@ class Spiders extends Component {
       }
       this.setState( newState );
     }
-    checkIfSolved(this.state.spiders, this.state.lines);
+   
+    this.identifyCrossedLines();
+  
   }
 
   setDeltas(e, spiderId) {
