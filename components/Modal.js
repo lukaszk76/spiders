@@ -21,7 +21,11 @@ class Modal extends Component {
                         transform: this.props.show ? 'translateY(0)' : 'translateY(-100vh)',
                         opacity: this.props.show ? '1' : '0'
                     }}>
-                    {this.props.children}
+                    
+                    <h3>Gratulacje!</h3>
+                    <p>Jesteś niezły w rozplątywaniu pajęczyny!</p>
+                    <p>Poziom <span className={styles.milisec}><b>{this.props.level + 1}</b></span> będzie trudniejszy...</p>
+                    
                 </div>
             </>
         );

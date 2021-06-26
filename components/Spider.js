@@ -21,8 +21,8 @@ class Spider extends Component {
                     priority
                     src="/images/spider.png"
                     className={styles.borderCircle}
-                    height={144}
-                    width={144}
+                    height={this.props.size}
+                    width={this.props.size}
                     alt={"spider"+this.props.id}
                 />
             </div>
