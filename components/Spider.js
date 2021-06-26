@@ -9,6 +9,7 @@ class Spider extends Component {
         return (
            <div 
                 className={styles.spiders} 
+                // this is to position the spider in given coordinates (result of mouse dragging)
                 style={{ 
                     left: this.props.x+"px", 
                     top: this.props.y+"px"

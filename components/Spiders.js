@@ -3,43 +3,40 @@ import React, {Component} from 'react';
 import Spider from "./Spider";
 import Lines from "./Lines"
 
+import level1DataJSON from '../levels/level1.json';
+
 class Spiders extends Component {
  
   constructor(props) {
     super(props);
   
-    this.deltaX = 0;  //delta between current position of cursor and center of a spider when dragging starts (X coordinate)
-    this.deltaY = 0;  //delta between current position of cursor and center of a spider when dragging starts (Y coordinate)
-    this.state = {  //collection of spiders #TODO: this should be loaded from an external file
-      spiders:{
-        1:{
-          x:100,
-          y:300
-        },
-        2:{
-          x:300,
-          y:400
-        },
-        3:{
-          x:500,
-          y:100
-        }
-      },
-      lines:{
-        1:{
-          from:1,
-          to:2
-        },
-        2:{
-          from:1,
-          to:3
-        }
-      }
+    this.deltaX = undefined;  //delta between current position of cursor and center of a spider when dragging starts (X coordinate)
+    this.deltaY = undefined;  //delta between current position of cursor and center of a spider when dragging starts (Y coordinate)
+    this.state = {  //collection of spiders. Initially null - these are loaded from JSON in componentDidMount()
+      spiders:null,
+      lines:null
     };
   }
 
+  componentDidMount() {
+    // load spiders data from external JSON file
+    const loadData = () => JSON.parse(JSON.stringify(level1DataJSON));
+    const level1Data = loadData();
+    
+    // and update state with the imported data
+    const newState = {
+      ...this.state,
+      spiders: level1Data.spiders,
+      lines: level1Data.lines
+    }
+    
+    this.setState(newState);
+  }
+
   spiderDragged(e, spiderId) {
+    // updates spider's position accodring to current cursor's one. An adjustemen (deltaX and deltaY) are added do that a spider is placed considering position of a mose on the spider
     if (e.clientY !== 0 & e.clientX !== 0) {
+      e.preventDefault();
       const newState = {
         ...this.state     
       }
@@ -51,43 +48,49 @@ class Spiders extends Component {
     }
   }
 
-  setDeltas(e, spiderId) {    
+  setDeltas(e, spiderId) {
+    // this is called when dragging starts. The aim is to record position of the cursor on a spider so that it can be later on used to properly place the spider whe dragging ends 
     this.deltaX = this.state.spiders[spiderId].x - e.clientX;
     this.deltaY = this.state.spiders[spiderId].y - e.clientY;
   }
-
-  // setWindowSize( width, height) {
-  //   const newState = {
-  //     ...this.state,
-  //     windowHeight: height,
-  //     windowWidth: width
-  //   }
-  //   this.setState( newState );
-  // }
-
+  
   render() {
     
+    let spiders = <div>loading spiders...</div>
+    if (this.state.spiders) { //first check if spiders have been loaded from the external JSON file
+      spiders = (
+        <div>
+          {Object
+            .keys(this.state.spiders)
+            .map( spiderId => 
+
+              <Spider 
+                key={spiderId} 
+                id={spiderId}
+                x={this.state.spiders[spiderId].x} 
+                y={this.state.spiders[spiderId].y}
+                onDrag={e => this.spiderDragged(e, spiderId)}
+                onMouseDown={e => this.setDeltas(e, spiderId)} 
+              />
+              
+          )}
+        </div>
+      )
+    }
+
+    let lines = <div></div>
+    if (this.state.lines) { //first check if lines have been loaded from external JSON file
+      lines =  <Lines state={this.state}/>
+    }
+
     return (
       <div>
         
-        {/* draw spiders based on their collection in the state*/}
-        {Object
-          .keys(this.state.spiders)
-          .map( spiderId => 
-
-            <Spider 
-              key={spiderId} 
-              id={spiderId}
-              x={this.state.spiders[spiderId].x} 
-              y={this.state.spiders[spiderId].y}
-              onDrag={e => this.spiderDragged(e, spiderId)}
-              onMouseDown={e => this.setDeltas(e, spiderId)} 
-            />
+        {/* draw spiders based on their collection in the state */}
+        { spiders }
             
-        )}
-
         {/* draw lines between spiders */}
-        <Lines state={this.state}/>
+        {lines}
   
       </div>
     )
