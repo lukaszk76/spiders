@@ -10,6 +10,25 @@ class Modal extends Component {
     }
     
     render() {
+
+        let message = (
+            <div>
+                <h3>Gratulacje!</h3>
+                <p>Jesteś niezły w rozplątywaniu pajęczyny!</p>
+                <p>Poziom <span className={styles.milisec}><b>{this.props.level + 1}</b></span> będzie trudniejszy...</p>
+            </div>
+        )
+
+        if (this.props.level === this.props.maxLevel) {
+            message = (
+                <div>
+                    <h3>Gratulacje!</h3>
+                    <p>Pokonałeś najtrudniejszą pajęczynę !</p>
+                    <p>Zagrasz jeszcze raz od poziomu <span className={styles.milisec}><b>1</b></span> ?</p>
+                </div>
+            )
+        }
+
         return(
             <>
                 <Backdrop 
@@ -22,9 +41,7 @@ class Modal extends Component {
                         opacity: this.props.show ? '1' : '0'
                     }}>
                     
-                    <h3>Gratulacje!</h3>
-                    <p>Jesteś niezły w rozplątywaniu pajęczyny!</p>
-                    <p>Poziom <span className={styles.milisec}><b>{this.props.level + 1}</b></span> będzie trudniejszy...</p>
+                {message}   
                     
                 </div>
             </>

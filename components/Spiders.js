@@ -13,6 +13,10 @@ import level3DataJSON from '../levels/level3.json';
 import level4DataJSON from '../levels/level4.json';
 import level5DataJSON from '../levels/level5.json';
 import level6DataJSON from '../levels/level6.json';
+import level7DataJSON from '../levels/level7.json';
+import level8DataJSON from '../levels/level8.json';
+import level9DataJSON from '../levels/level9.json';
+import level10DataJSON from '../levels/level10.json';
 
 class Spiders extends Component {
  
@@ -22,6 +26,7 @@ class Spiders extends Component {
     this.deltaX = undefined;  //delta between current position of cursor and center of a spider when dragging starts (X coordinate)
     this.deltaY = undefined;  //delta between current position of cursor and center of a spider when dragging starts (Y coordinate)
     this.size = 100;          //size of a spider
+    this.maxLevel = 10;
     this.state = {  
       spiders:null,           //collection of spiders. Initially null - these are loaded from JSON in componentDidMount()
       lines:null,             //collection of lines between spiders. Initially null - these are loaded from JSON in componentDidMount()
@@ -60,6 +65,22 @@ class Spiders extends Component {
       }
       case 6: {
         levelDataJSON = level6DataJSON;
+        break;
+      }
+      case 7: {
+        levelDataJSON = level7DataJSON;
+        break;
+      }
+      case 8: {
+        levelDataJSON = level8DataJSON;
+        break;
+      }
+      case 9: {
+        levelDataJSON = level9DataJSON;
+        break;
+      }
+      case 10: {
+        levelDataJSON = level10DataJSON;
         break;
       }
     }
@@ -117,7 +138,11 @@ class Spiders extends Component {
   
   // triggers loading data for the next level and closes the modal with congratulations
   nextLevel() {
-    const nextLevel = this.state.level + 1;
+
+    let nextLevel = this.state.level + 1;
+    if (nextLevel > this.maxLevel) {
+      nextLevel = 1;
+    }
     const levelData = this.loadLevelData(nextLevel);    //load data for the next level 
     
     const newState = {
@@ -176,6 +201,7 @@ class Spiders extends Component {
             show={this.state.levelCompleted}
             modalClosed={this.nextLevel.bind(this)}
             level={this.state.level}
+            maxLevel={this.maxLevel}
         />     
         
 
