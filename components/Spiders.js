@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 
 import Spider from "./Spider";
-import Lines from "./Lines"
+import Lines from "./Lines";
+import Modal from "./Modal";
+import LevelCounter from "./LevelCounter";
 import checkIfSolved from '../utils/checkIfSolved';
 
 import level1DataJSON from '../levels/level1.json';
+import level2DataJSON from '../levels/level2.json';
+import level3DataJSON from '../levels/level3.json';
 
 class Spiders extends Component {
  
@@ -14,41 +18,57 @@ class Spiders extends Component {
     this.deltaX = undefined;  //delta between current position of cursor and center of a spider when dragging starts (X coordinate)
     this.deltaY = undefined;  //delta between current position of cursor and center of a spider when dragging starts (Y coordinate)
     this.state = {  
-      spiders:null,       //collection of spiders. Initially null - these are loaded from JSON in componentDidMount()
-      lines:null,         //collection of lines between spiders. Initially null - these are loaded from JSON in componentDidMount()
-      linesCrossed: {}  //collection of lines crossed with other lines
+      spiders:null,           //collection of spiders. Initially null - these are loaded from JSON in componentDidMount()
+      lines:null,             //collection of lines between spiders. Initially null - these are loaded from JSON in componentDidMount()
+      linesCrossed: {},       //collection of lines crossed with other lines
+      levelCompleted: false,  //set true if level completed - will trigger congratulations modal
+      level: 0                //current level
     };
   }
 
-  componentDidMount() {
-    // load spiders data from external JSON file
-    const loadData = () => JSON.parse(JSON.stringify(level1DataJSON));
-    const level1Data = loadData();
+  // loads spiders and lines from JSON file for the current level (level defined in state)
+  loadLevelData(level) {
     
-    // and update state with the imported data
-    const newState = {
-      ...this.state,
-      spiders: level1Data.spiders,
-      lines: level1Data.lines,
+    let levelDataJSON = level3DataJSON;
+    switch(level) {
+      case 1: {
+        levelDataJSON = level1DataJSON;
+        break;
+      }
+      case 2: {
+        levelDataJSON = level2DataJSON;
+        break;
+      }
+      case 3: {
+        levelDataJSON = level3DataJSON;
+        break;
+      }
     }
-    
-    this.setState(newState);
 
+    const levelData = JSON.parse(JSON.stringify(levelDataJSON)); //parse from JSON to Object
+    return levelData;
+  }
+
+  componentDidMount() {
+    
+    this.nextLevel();
     this.identifyCrossedLines();
 
   }
-
+   
   identifyCrossedLines() {
-  
     if( this.state.spiders !== null & this.state.lines !== null ) {
       const linesCrossed = checkIfSolved(this.state.spiders, this.state.lines);
+      const levelCompleted = Object.keys(linesCrossed).length > 0 ? false : true;
       const newState = {
         ...this.state,
-        linesCrossed: linesCrossed
+        linesCrossed: linesCrossed,
+        levelCompleted: levelCompleted
       };
 
       this.setState( newState );
     };
+
   }
 
   spiderDragged(e, spiderId) {
@@ -75,6 +95,22 @@ class Spiders extends Component {
     this.deltaY = this.state.spiders[spiderId].y - e.clientY;
   }
   
+  nextLevel() {
+    //triggers loading data for the next level and closes the modal with congratulations  
+    const nextLevel = this.state.level + 1;
+    const levelData = this.loadLevelData(nextLevel);
+    
+    const newState = {
+      ...this.state,
+      spiders: levelData.spiders,
+      lines: levelData.lines,
+      linesCrossed: {},
+      level: nextLevel,
+      levelCompleted: false
+    }
+    this.setState(newState);
+  }
+
   render() {
     
     let spiders = <div>loading spiders...</div>
@@ -101,11 +137,24 @@ class Spiders extends Component {
 
     let lines = <div></div>
     if (this.state.lines) { //first check if lines have been loaded from external JSON file
-      lines =  <Lines state={this.state}/>
+      lines =  <Lines state={this.state} />
     }
 
     return (
       <div>
+        {/* this is the modal which appears when a level is completed */}
+        <Modal 
+            show={this.state.levelCompleted}
+            modalClosed={this.nextLevel.bind(this)}>
+            <div>
+              <h3>Gratulacje!</h3>
+              <br/>
+              <p>jesteś niezły w rozplątywaniu pajęczyny!</p>
+              <p>teraz będzie trudniej...</p>
+            </div>       
+        </Modal>
+
+        <LevelCounter level={this.state.level}/>
         
         {/* draw spiders based on their collection in the state */}
         { spiders }

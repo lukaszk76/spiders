@@ -4,6 +4,7 @@ import styles from "../styles/styles.module.css";
 
 const Lines = (props) => {
     const windowSize = useWindowDimensions(); // svg requires proper window size. It cannot be properly detecte on SSR. It may be delivered from useEffect which is triggered when rendering on client's side
+    
     return (
         <svg height={windowSize.height} width={windowSize.width} >
         {Object
@@ -13,9 +14,9 @@ const Lines = (props) => {
                 // get spider's ids on both ends of a line
                 const spider1 = props.state.lines[lineId].from;
                 const spider2 = props.state.lines[lineId].to;
-              
+                
                 return (
-               
+                    
                     <line 
                         className={props.state.linesCrossed[lineId] ? styles.crossedLine : styles.solvedLine}
                         key={lineId}
