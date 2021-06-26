@@ -1,38 +1,42 @@
 import React, {Component} from 'react';
+
 import Spider from "./Spider";
-import styles from "../styles/styles.module.css";
+import Lines from "./Lines"
 
 class Spiders extends Component {
-  state = {
-    spiders:{
-      1:{
-        x:100,
-        y:300
+ 
+  constructor(props) {
+    super(props);
+  
+    this.deltaX = 0;  //delta between current position of cursor and center of a spider when dragging starts (X coordinate)
+    this.deltaY = 0;  //delta between current position of cursor and center of a spider when dragging starts (Y coordinate)
+    this.state = {  //collection of spiders #TODO: this should be loaded from an external file
+      spiders:{
+        1:{
+          x:100,
+          y:300
+        },
+        2:{
+          x:300,
+          y:400
+        },
+        3:{
+          x:500,
+          y:100
+        }
       },
-      2:{
-        x:300,
-        y:400
-      },
-      3:{
-        x:500,
-        y:100
+      lines:{
+        1:{
+          from:1,
+          to:2
+        },
+        2:{
+          from:1,
+          to:3
+        }
       }
-    },
-    lines:{
-      1:{
-        from:1,
-        to:2
-      },
-      2:{
-        from:1,
-        to:3
-      }
-    }
+    };
   }
-
-
-  deltaX = 0;
-  deltaY = 0;
 
   spiderDragged(e, spiderId) {
     if (e.clientY !== 0 & e.clientX !== 0) {
@@ -52,10 +56,21 @@ class Spiders extends Component {
     this.deltaY = this.state.spiders[spiderId].y - e.clientY;
   }
 
+  // setWindowSize( width, height) {
+  //   const newState = {
+  //     ...this.state,
+  //     windowHeight: height,
+  //     windowWidth: width
+  //   }
+  //   this.setState( newState );
+  // }
+
   render() {
     
     return (
       <div>
+        
+        {/* draw spiders based on their collection in the state*/}
         {Object
           .keys(this.state.spiders)
           .map( spiderId => 
@@ -70,30 +85,10 @@ class Spiders extends Component {
             />
             
         )}
-        <svg height={window.innerHeight} width={window.innerWidth} >
-        {Object
-          .keys(this.state.lines)
-          .map( lineId =>
-            {
-              const spider1 = this.state.lines[lineId].from;
-              const spider2 = this.state.lines[lineId].to;
-              
-              return (
-               
-                  <line 
-                    className={styles.redLines}
-                    key={lineId}
-                    x1={this.state.spiders[spider1].x+77} 
-                    y1={this.state.spiders[spider1].y+77} 
-                    x2={this.state.spiders[spider2].x+77} 
-                    y2={this.state.spiders[spider2].y+77}  
-                  />
-            
-              )
-            }
-        )}
 
-        </svg>
+        {/* draw lines between spiders */}
+        <Lines state={this.state}/>
+  
       </div>
     )
   }
