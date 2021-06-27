@@ -2,6 +2,7 @@ import React from "react";
 import useWindowDimensions from "../utils/useWindowDimensions";
 import styles from "../styles/styles.module.css";
 
+
 const Lines = (props) => {
     
     const windowSize = useWindowDimensions(); // svg requires proper window size. It cannot be  detecte on SSR. It may be delivered from useEffect which is triggered when rendering on client's side

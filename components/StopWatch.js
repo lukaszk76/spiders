@@ -37,7 +37,7 @@ return (
             {/* this timer displays current time */}
             <Timer time={time} />           
             
-            <div className={styles.info}>ukończyłeś poziom w</div>
+            <div className={styles.info}>rozplątałeś pajęczynę w</div>
             
             {/* this timer displays time at compeltion of the previous level */}
             <Timer time={previousTime} />   

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+//custom components
 import Spider from "./Spider";
 import Lines from "./Lines";
 import Modal from "./Modal";
@@ -34,7 +35,8 @@ class Spiders extends Component {
       levelCompleted: false,  //set true if level completed - will trigger congratulations modal
       level: 0,               //current level
       stoperActive: false,    //triggers the stopwatch
-      time: 0                 //initial time for the stopwatch
+      time: 0,                //initial time for the stopwatch
+      crossPoints: {}         //coordinates of all points where lines are crossed
     };
   }
 
@@ -93,15 +95,16 @@ class Spiders extends Component {
     this.nextLevel();             //triggers loading data for the first level
     this.identifyCrossedLines();  //mark lines which a crossed
   }
-   
+  
   // identifies which lines are crossed and if initiates actions releted to completion of the level
   identifyCrossedLines() {
     if( this.state.spiders !== null & this.state.lines !== null ) {                 
-      const linesCrossed = checkIfSolved(this.state.spiders, this.state.lines);     //build collection of crossed lines
+      const [linesCrossed, crossPoints] = checkIfSolved(this.state.spiders, this.state.lines, this.size);     //build collection of crossed lines
       const levelCompleted = Object.keys(linesCrossed).length > 0 ? false : true;   //if no lines crossed were detected this means that the level is completed
       const newState = {
         ...this.state,
         linesCrossed: linesCrossed,
+        crossPoints: crossPoints,
         levelCompleted: levelCompleted,
         stoperActive: !levelCompleted,
       };
@@ -132,8 +135,10 @@ class Spiders extends Component {
 
   // this is called when dragging starts. The aim is to record position of the cursor on a spider so that it can be later on used to properly place the spider whe dragging ends
   setDeltas(e, spiderId) {
+
     this.deltaX = this.state.spiders[spiderId].x - e.clientX;
     this.deltaY = this.state.spiders[spiderId].y - e.clientY;
+    
   }
   
   // triggers loading data for the next level and closes the modal with congratulations
